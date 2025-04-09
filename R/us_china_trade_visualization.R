@@ -4,6 +4,7 @@ library(tidyverse)
 library(readxl)
 library(scales)
 library(ggimage)
+library(extrafont)
 
 
 # get data from US Bureau of Economic Analysis (BEA)
@@ -42,6 +43,19 @@ colors_manual <- c(
   "#4361ee"
 )
 
+# fonts
+
+# font_import()
+
+
+# Social Caption ----------------------------------------------------------
+
+
+social_caption <- glue::glue(
+  "<span style='font-family:\"Font Awesome 6 Brands\";'>{github_icon};</span>
+  <span style='color: #E30B5C'>{github_username}</span>"
+)
+
 
 
 # Extract China -----------------------------------------------------------
@@ -77,7 +91,7 @@ china_trade <-
   filter(Period %in% c(1999:2024)) |> 
   mutate(Period = as.integer(Period)) |> 
   # divide by 1000 to get to billions
-  mutate(across(contains("china", ignore.case = TRUE), ~ . / 1000))
+  mutate(across(contains("china", ignore.case = TRUE), ~ round(. / 1000, 1)))
 
 
 
@@ -129,13 +143,14 @@ china_trade_long |>
       label = value,
       color = direction
     ),
-    hjust = 0.2,
+    hjust = 0.3,
     vjust = 1.8
   ) +
   coord_cartesian(ylim = c(0, 600)) +
   labs(
     title = "US Goods Trade Deficit with China",
-    subtitle = "(billions of USD)",
+    subtitle = "(billions of USD, per year)",
+    caption = "Data from bea.gov | Visual: Vlad Mijatovic",
     x = "",
     y = ""
   ) +
@@ -143,7 +158,10 @@ china_trade_long |>
   # improve theme
   theme(
     legend.position = "bottom",
-    legend.title = element_blank()
+    legend.title = element_blank(),
+    text = element_text(family = "Dubai"),
+    plot.title = element_text(face = "bold", size = 24, hjust = 0.5) ,
+    plot.subtitle = element_text(face = "italic", size = 18, hjust = 0.5)
   ) +
   guides(color = guide_legend(override.aes = list(shape = NA))) +
   scale_color_manual(values = colors_manual) +
