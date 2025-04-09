@@ -92,7 +92,7 @@ china_trade_long |>
   geom_line(
     linewidth = 1.5
   ) +
-  coord_cartesian(ylim = c(0, 600)) +
+  coord_cartesian(ylim = c(0, 1000)) +
   labs(
     title = "US Trade with China",
     subtitle = "(billions of USD)",
@@ -105,13 +105,14 @@ china_trade_long |>
     legend.position = "bottom",
     legend.title = element_blank()
   ) +
-  scale_y_continuous(labels = dollar_format(prefix = "$")) +
+  scale_y_continuous(labels = dollar_format(prefix = "$")) #+
   # add image
-  geom_image(
-    data = tibble(
-      period = 2020, 
-      value  = 200),
-    aes(image = "https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https://bucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com/public/images/16628e17-6726-45e3-98c3-f4924d537c14_1000x567.jpeg"),
-    size = 0.5
-  )
+  # geom_image(
+  #   data = tibble(
+  #     Period = 2020, 
+  #     value  = 800,
+  #     direction = "x"),
+  #   aes(image = "./images/us_china_war.png"),
+  #   size = 0.5
+  # )
 
