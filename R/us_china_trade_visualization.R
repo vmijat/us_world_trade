@@ -2,6 +2,8 @@
 
 library(tidyverse)
 library(readxl)
+library(scales)
+library(ggimage)
 
 
 # get data from US Bureau of Economic Analysis (BEA)
@@ -64,7 +66,9 @@ china_trade <-
 china_trade <- 
   china_trade |> 
   filter(Period %in% c(1999:2024)) |> 
-  mutate(Period = as.integer(Period))
+  mutate(Period = as.integer(Period)) |> 
+  # divide by 1000 to get to billions
+  mutate(across(contains("china", ignore.case = TRUE), ~ . / 1000))
 
 
 
@@ -88,10 +92,10 @@ china_trade_long |>
   geom_line(
     linewidth = 1.5
   ) +
-  coord_cartesian(ylim = c(0, 600000)) +
+  coord_cartesian(ylim = c(0, 600)) +
   labs(
     title = "US Trade with China",
-    subtitle = "Billions of USD",
+    subtitle = "(billions of USD)",
     x = "",
     y = ""
   ) +
@@ -100,4 +104,14 @@ china_trade_long |>
   theme(
     legend.position = "bottom",
     legend.title = element_blank()
+  ) +
+  scale_y_continuous(labels = dollar_format(prefix = "$")) +
+  # add image
+  geom_image(
+    data = tibble(
+      period = 2020, 
+      value  = 200),
+    aes(image = "https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https://bucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com/public/images/16628e17-6726-45e3-98c3-f4924d537c14_1000x567.jpeg"),
+    size = 0.5
   )
+
