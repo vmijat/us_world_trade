@@ -32,3 +32,41 @@ import_into_us <- readxl::read_xlsx("./data_raw/us_trading_per_country.xlsx",
 
 
 
+
+# Extract China -----------------------------------------------------------
+
+china_export_from_us <- 
+  export_from_us |> 
+  select("Period","China") |> 
+  rename("China_import" = "China")
+
+china_import_to_us <- 
+  import_into_us |> 
+  select("Period","China") |> 
+  rename("China_export" = "China")
+
+
+# join dataframes
+
+china_trade <- 
+  china_export_from_us |> 
+  left_join(china_import_to_us)
+
+
+
+# Let's look at annual trade only -----------------------------------------
+
+
+china_trade <- 
+  china_trade |> 
+  slice(-1)
+
+china_trade <- 
+  china_trade |> 
+  filter(Period %in% c(1999:2024))
+
+
+
+# Visualization -----------------------------------------------------------
+
+
