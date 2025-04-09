@@ -106,7 +106,7 @@ china_trade_long <-
     names_to = "direction"
   )
 
-china_trade_long |> 
+p <- china_trade_long |> 
   ggplot(aes(
     x = Period,
     y = value,
@@ -159,7 +159,7 @@ china_trade_long |>
   theme(
     legend.position = "bottom",
     legend.title = element_blank(),
-    text = element_text(family = "Dubai"),
+    text = element_text(family = "Roboto"),
     plot.title = element_text(face = "bold", size = 24, hjust = 0.5) ,
     plot.subtitle = element_text(face = "italic", size = 18, hjust = 0.5)
   ) +
@@ -177,3 +177,25 @@ china_trade_long |>
   #   
   # )
 
+p
+
+
+# Animate -----------------------------------------------------------------
+
+
+library(gganimate)
+
+
+# Animate with transition_reveal()
+animated_plot_with_pause <- p +
+  transition_reveal(Period) 
+
+
+
+animate(animated_plot_with_pause, 
+        duration = 9, 
+        fps = 20, 
+        width = 700, 
+        height = 500, 
+        end_pause = 70,
+        renderer = gifski_renderer("multi_line_animation.gif"))
