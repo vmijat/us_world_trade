@@ -92,9 +92,40 @@ china_trade_long |>
   geom_line(
     linewidth = 1.5
   ) +
-  coord_cartesian(ylim = c(0, 1000)) +
+  geom_point(
+    data = china_trade_long |>
+      filter(Period == max(china_trade_long$Period)),
+    aes(
+      x = Period,
+      y = value 
+    ),
+    size = 4 
+  ) +
+  geom_point(
+    data = china_trade_long |>
+      filter(Period == max(china_trade_long$Period)),
+    aes(
+      x = Period,
+      y = value 
+    ),
+    size = 2.5,
+    color = "white" 
+  ) +
+  geom_text(
+    data = china_trade_long |>
+      filter(Period == max(china_trade_long$Period)),
+    aes(
+      x = Period,
+      y = value,
+      label = value,
+      color = direction
+    ),
+    hjust = 0.2,
+    vjust = 1.8
+  ) +
+  coord_cartesian(ylim = c(0, 600)) +
   labs(
-    title = "US Trade with China",
+    title = "US Goods Trade Deficit with China",
     subtitle = "(billions of USD)",
     x = "",
     y = ""
@@ -105,6 +136,8 @@ china_trade_long |>
     legend.position = "bottom",
     legend.title = element_blank()
   ) +
+  guides(color = guide_legend(override.aes = list(shape = NA))) +
+  scale_color_brewer(palette = "Accent")
   scale_y_continuous(labels = dollar_format(prefix = "$")) #+
   # add image
   # geom_image(
