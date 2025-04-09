@@ -34,6 +34,15 @@ import_into_us <- readxl::read_xlsx("./data_raw/us_trading_per_country.xlsx",
 
 
 
+# Colors ------------------------------------------------------------------
+
+
+colors_manual <- c(
+  "#b5179e",
+  "#4361ee"
+)
+
+
 
 # Extract China -----------------------------------------------------------
 
@@ -137,7 +146,7 @@ china_trade_long |>
     legend.title = element_blank()
   ) +
   guides(color = guide_legend(override.aes = list(shape = NA))) +
-  scale_color_brewer(palette = "Accent") +
+  scale_color_manual(values = colors_manual) +
   scale_y_continuous(labels = dollar_format(prefix = "$")) # +
   # add image
   # geom_image(
