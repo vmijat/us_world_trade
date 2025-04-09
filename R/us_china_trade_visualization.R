@@ -137,15 +137,16 @@ china_trade_long |>
     legend.title = element_blank()
   ) +
   guides(color = guide_legend(override.aes = list(shape = NA))) +
-  scale_color_brewer(palette = "Accent")
-  scale_y_continuous(labels = dollar_format(prefix = "$")) #+
+  scale_color_brewer(palette = "Accent") +
+  scale_y_continuous(labels = dollar_format(prefix = "$")) # +
   # add image
   # geom_image(
   #   data = tibble(
-  #     Period = 2020, 
-  #     value  = 800,
+  #     Period = 2020,
+  #     value  = 400,
   #     direction = "x"),
-  #   aes(image = "./images/us_china_war.png"),
+  #   aes(image = "./images/chem2.bmp"),
   #   size = 0.5
+  #   
   # )
 
