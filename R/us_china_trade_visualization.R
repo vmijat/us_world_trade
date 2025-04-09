@@ -63,10 +63,34 @@ china_trade <-
 
 china_trade <- 
   china_trade |> 
-  filter(Period %in% c(1999:2024))
+  filter(Period %in% c(1999:2024)) |> 
+  mutate(Period = as.integer(Period))
 
 
 
 # Visualization -----------------------------------------------------------
 
+# convert to long format
 
+china_trade_long <- 
+  china_trade |> 
+  pivot_longer(
+    cols = c("China_import", "China_export"),
+    names_to = "direction"
+  )
+
+china_trade_long |> 
+  ggplot(aes(
+    x = Period,
+    y = value,
+    color = direction
+  )) +
+  geom_line() +
+  coord_cartesian(ylim = c(0, 600000)) +
+  labs(
+    title = "US Trade with China",
+    subtitle = "Billions of USD",
+    x = "",
+    y = ""
+  ) +
+  theme_minimal()
