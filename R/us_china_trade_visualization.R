@@ -38,12 +38,12 @@ import_into_us <- readxl::read_xlsx("./data_raw/us_trading_per_country.xlsx",
 china_export_from_us <- 
   export_from_us |> 
   select("Period","China") |> 
-  rename("China_import" = "China")
+  rename("export to China" = "China")
 
 china_import_to_us <- 
   import_into_us |> 
   select("Period","China") |> 
-  rename("China_export" = "China")
+  rename("import from China" = "China")
 
 
 # join dataframes
@@ -75,7 +75,7 @@ china_trade <-
 china_trade_long <- 
   china_trade |> 
   pivot_longer(
-    cols = c("China_import", "China_export"),
+    cols = contains("china", ignore.case = TRUE),
     names_to = "direction"
   )
 
@@ -85,7 +85,9 @@ china_trade_long |>
     y = value,
     color = direction
   )) +
-  geom_line() +
+  geom_line(
+    linewidth = 1.5
+  ) +
   coord_cartesian(ylim = c(0, 600000)) +
   labs(
     title = "US Trade with China",
@@ -93,4 +95,9 @@ china_trade_long |>
     x = "",
     y = ""
   ) +
-  theme_minimal()
+  theme_minimal() +
+  # improve theme
+  theme(
+    legend.position = "bottom",
+    legend.title = element_blank()
+  )
