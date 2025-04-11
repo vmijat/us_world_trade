@@ -96,21 +96,35 @@ trade_with_us_2024 |>
     x = fct_reorder(country_code, deficit),
     y = deficit,
     fill = deficit
-  )) +
-  geom_col() +
+  ),
+  color = "white") +
+  geom_col(
+    width = .98
+  ) +
   geom_flag(
     aes(country = country_code),
-    y = 0
+    y = 0, 
+    size = 6
+  ) +
+  geom_label(
+    aes(label = 
+          paste(
+            scales::dollar(round(deficit / 1000, 0)), 
+            "B")),  # Format as currency
+    hjust = - 0.2  # Position labels above the bars
   ) +
   labs(y = "", 
        x = "", 
-       title = "US Goods Trade Deficit in 2024 Per Country", 
+       title = "2024 US Goods Trade Deficit Per Country", 
        subtitle = "top 15",
-       caption = "Visualization: Vlad Mijatovic") +
+       caption = "Data from bea.gov | Visual: Vlad Mijatović") +
   scale_x_discrete() +
   theme_minimal() +
+  scale_fill_viridis_c("inferno") + 
   theme(
-    legend.position = 'none'
+    legend.position = 'none',
+    plot.title.position = "plot",
+    plot.title = element_text(size = 20)
   ) +
   coord_flip()
 
