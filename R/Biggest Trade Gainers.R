@@ -87,7 +87,7 @@ trade_with_us_2024 <-
 # Make a graph ------------------------------------------------------------
 
 
-trade_with_us_2024 |> 
+p <- trade_with_us_2024 |> 
   arrange(desc(deficit)) |> 
   filter(str_length(country_code) == 2) |> 
   slice_head(n = 15) |> 
@@ -131,6 +131,7 @@ trade_with_us_2024 |>
   coord_cartesian(ylim = c(0, 350)) +
   coord_flip()
 
+p
 
 # Highlight Switzerland ---------------------------------------------------
 
@@ -185,4 +186,27 @@ trade_with_us_2024 |>
   ) +
   coord_cartesian(ylim = c(0, 350)) +
   coord_flip()
+
+
+
+
+# Animate -----------------------------------------------------------------
+
+library(gganimate)
+
+
+# Animate with transition_reveal()
+animated_plot_with_pause <- p +
+  transition_time(deficit) 
+
+
+
+animate(animated_plot_with_pause, 
+        duration = 9, 
+        fps = 20, 
+        width = 700, 
+        height = 500, 
+        end_pause = 70,
+        renderer = gifski_renderer("trade_deficit_animation.gif"))
+
 
