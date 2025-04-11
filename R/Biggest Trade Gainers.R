@@ -91,6 +91,7 @@ trade_with_us_2024 |>
   arrange(desc(deficit)) |> 
   filter(str_length(country_code) == 2) |> 
   slice_head(n = 15) |> 
+  mutate(deficit = round(deficit / 1000, 0)) |> 
   
   ggplot(aes(
     x = fct_reorder(country_code, deficit),
@@ -104,27 +105,84 @@ trade_with_us_2024 |>
   geom_flag(
     aes(country = country_code),
     y = 0, 
-    size = 6
+    size = 7
   ) +
   geom_label(
     aes(label = 
           paste(
-            scales::dollar(round(deficit / 1000, 0)), 
+            scales::dollar(deficit), 
             "B")),  # Format as currency
-    hjust = - 0.2  # Position labels above the bars
+    hjust =  0.2  # Position labels above the bars
   ) +
   labs(y = "", 
        x = "", 
        title = "2024 US Goods Trade Deficit Per Country", 
        subtitle = "top 15",
-       caption = "Data from bea.gov | Visual: Vlad Mijatović") +
-  scale_x_discrete() +
+       caption = "Data from bea.gov | Visualization: Vlad Mijatović") +
   theme_minimal() +
-  scale_fill_viridis_c("inferno") + 
+  scale_fill_gradient(high = "red", low = "darkorchid") + 
   theme(
     legend.position = 'none',
     plot.title.position = "plot",
-    plot.title = element_text(size = 20)
+    plot.title = element_text(size = 20),
+    panel.grid = element_blank(),
+    axis.text.x = element_blank()
   ) +
+  coord_cartesian(ylim = c(0, 350)) +
+  coord_flip()
+
+
+# Highlight Switzerland ---------------------------------------------------
+
+
+trade_with_us_2024 |> 
+  arrange(desc(deficit)) |> 
+  filter(str_length(country_code) == 2) |> 
+  slice_head(n = 15) |> 
+  mutate(deficit = round(deficit / 1000, 0),
+         highlight = country_code == "ch") |> 
+  
+  ggplot(aes(
+    x = fct_reorder(country_code, deficit),
+    y = deficit,
+    fill = highlight
+  ),
+  color = "white") +
+  geom_col(
+    width = .98,
+    alpha = 0.7
+  ) +
+  geom_flag(
+    aes(country = country_code),
+    y = 0, 
+    size = 7
+  ) +
+  geom_label(
+    aes(label = 
+          paste(
+            scales::dollar(deficit), 
+            "B"),
+        fill = highlight,
+        alpha = if_else(highlight, 1, 0.2) ),  # Format as currency
+    hjust =  0.2,
+    fill = "white"# Position labels above the bars
+  ) +
+  labs(y = "", 
+       x = "", 
+       title = "2024 US Goods Trade Deficit Per Country", 
+       subtitle = "Switzerland: 38 B",
+       caption = "Data from bea.gov | Visualization: Vlad Mijatović") +
+  theme_minimal() +
+  scale_fill_manual(values = c(
+    "grey70",
+    "darkorchid")) + 
+  theme(
+    legend.position = 'none',
+    plot.title.position = "plot",
+    plot.title = element_text(size = 20),
+    panel.grid = element_blank(),
+    axis.text.x = element_blank()
+  ) +
+  coord_cartesian(ylim = c(0, 350)) +
   coord_flip()
 
