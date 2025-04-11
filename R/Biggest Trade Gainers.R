@@ -1,6 +1,11 @@
 # Trade Gainers
 
 library(tidyverse)
+library(ggflags) 
+library(countrycode) # to convert country names to country codes
+library(tidytext) # for reorder_within
+library(scales) # for application of common formats to scale labels (e.g., comma, percent, dollar)
+
 
 
 # import data
@@ -49,6 +54,42 @@ import_into_us_long <-
 trade_with_us <- 
   export_from_us_long |> 
   left_join(import_into_us_long,
-            by = c("Period", "Country"))
+            by = c("Period", "Country")) |> 
+  mutate(deficit = Import_amount - Export_amount)
 
+
+
+# Let's see only for 2024 -------------------------------------------------
+
+
+trade_with_us_2024 <- 
+  trade_with_us |> 
+  filter(Period == 2024)
+
+
+trade_with_us_2024$country_code <- 
+  trade_with_us_2024$Country |> 
+  countrycode("country.name", "iso2c") 
+
+
+trade_with_us_2024$country_code <- 
+  if_else(is.na(trade_with_us_2024$country_code), 
+          trade_with_us_2024$Country, 
+          trade_with_us_2024$country_code)
+
+sales$code <- countrycode(sales$country, "country.name", "iso2c")
+
+
+
+
+# Make a graph ------------------------------------------------------------
+
+
+trade_with_us_2024 |> 
+  ggplot(aes(
+    x = fct_reorder(country_code, deficit),
+    y = deficit
+  )) +
+  geom_col() +
+  coord_flip()
 
