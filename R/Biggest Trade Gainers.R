@@ -67,17 +67,19 @@ trade_with_us_2024 <-
   filter(Period == 2024)
 
 
-trade_with_us_2024$country_code <- 
-  trade_with_us_2024$Country |> 
-  countrycode("country.name", "iso2c") 
+trade_with_us_2024 <- trade_with_us_2024 %>%
+  mutate(country_code = tolower(countrycode(Country, 
+                                            "country.name", 
+                                            "iso2c", 
+                                            warn = FALSE)))
 
 
-trade_with_us_2024$country_code <- 
-  if_else(is.na(trade_with_us_2024$country_code), 
-          trade_with_us_2024$Country, 
-          trade_with_us_2024$country_code)
-
-sales$code <- countrycode(sales$country, "country.name", "iso2c")
+trade_with_us_2024 <- 
+  trade_with_us_2024 |> 
+  mutate(country_code = case_when(
+    country_code == "European Union" ~ "eu",
+    TRUE ~ country_code
+  ))
 
 
 
@@ -86,10 +88,29 @@ sales$code <- countrycode(sales$country, "country.name", "iso2c")
 
 
 trade_with_us_2024 |> 
+  arrange(desc(deficit)) |> 
+  filter(str_length(country_code) == 2) |> 
+  slice_head(n = 15) |> 
+  
   ggplot(aes(
     x = fct_reorder(country_code, deficit),
-    y = deficit
+    y = deficit,
+    fill = deficit
   )) +
   geom_col() +
+  geom_flag(
+    aes(country = country_code),
+    y = 0
+  ) +
+  labs(y = "", 
+       x = "", 
+       title = "US Goods Trade Deficit in 2024 Per Country", 
+       subtitle = "top 15",
+       caption = "Visualization: Vlad Mijatovic") +
+  scale_x_discrete() +
+  theme_minimal() +
+  theme(
+    legend.position = 'none'
+  ) +
   coord_flip()
 
